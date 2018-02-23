@@ -113,6 +113,37 @@ class Database(metaclass=DatabaseMeta):
     """
     
     def Initialize(self):
+        for initer in self.Initializers.values():
+            initer.CreateDb()
+            initer.ConnectDb()
+            #initer.Db.query('PRAGMA foreign_keys = false')
+            initer.CreateTable()
+            initer.InsertInitData()
+            #initer.Db.query('PRAGMA foreign_keys = true')
+
+        """
+        from database.init.DbInitializer import DbInitializer
+        from database.init.AccountsDbInitializer import AccountsDbInitializer as Accounts
+        from database.init.ApisDbInitializer import ApisDbInitializer as Apis
+        from database.init.GnuLicensesDbInitializer import GnuLicensesDbInitializer as GnuLicenses
+        from database.init.LanguagesDbInitializer import LanguagesDbInitializer as Languages
+        from database.init.LicensesDbInitializer import LicensesDbInitializer as Licenses
+        from database.init.OtherRepositoriesDbInitializer import OtherRepositoriesDbInitializer as OtherRepositories
+        from database.init.RepositoriesDbInitializer import RepositoriesDbInitializer as Repositories
+
+        for initer in [Apis(), Accounts(), Languages(), GnuLicenses(), Licenses(), OtherRepositories(), Repositories()]
+            initer.CreateDb()
+            initer.ConnectDb()
+            #initer.Db.query('PRAGMA foreign_keys = false')
+            initer.CreateTable()
+            initer.InsertInitData()
+            #initer.Db.query('PRAGMA foreign_keys = true')
+            attrs[initer.DbId] = property(lambda : initer)
+            #self[initer.DbId] = initer # プロパティにしたいが方法不明。これは属性値になってしまう
+            #self.__dbs[initer.DbId] = initer # Db, DbFilePathなどが得られる
+            # https://www.python-izm.com/advanced/property/
+            #property(get_url, set_url, del_url, 'url Property')
+            #property(lambda self x: x+1)
         pass
         """
         for initer in [ApisDbInitializer(), GnuLicensesDbInitializer()]

@@ -61,6 +61,11 @@ class DbInitializer(metaclass=ABCMeta):
             creater.Create()
         """
 
+    # SQLファイルによる挿入
+    def __InsertBySql(self):
+        for path_sql in self.__GetCreateTableSqlFilePaths():
+            self.__ExecuteSqlFile(dbname, path_sql)
+
     # TSVファイルによる挿入
     def __InsertByTsv(self):
         for path_tsv in self.__GetInsertTsvFilePaths():
@@ -142,11 +147,16 @@ class DbInitializer(metaclass=ABCMeta):
         path = os.path.join(self.__path_dir_this, self.DbId, 'insert', 'tsv')
         for path_tsv in glob.glob(os.path.join(path + '*.tsv')): yield path_tsv
 
+    # パス取得（初期値挿入用SQLファイル）
+    def __GetInsertSqlFilePaths(self, dbname):
+        path = os.path.join(self.__path_dir_this, self.DbId, 'insert', 'sql')
+        for path_tsv in glob.glob(os.path.join(path + '*.sql')): yield path_tsv
+
     # SQLファイル発行
     def __ExecuteSqlFile(self, dbname, sql_path):
         with open(sql_path, 'r') as f:
             sql = f.read()
-            self.__dbs[dbname].query(sql)
+            self.__class__.Db.query(sql)
 
     """
     def Initialize(self):
